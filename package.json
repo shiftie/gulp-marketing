@@ -1,0 +1,62 @@
+{
+  "scripts": {
+    "zendesk": "gulp --site=zendesk",
+    "zendesk-prod": "gulp --site=zendesk --env=prod"
+  },
+  "dependencies": {
+    "babel-preset-es2015": "^6.24.1",
+    "babelify": "^7.3.0",
+    "browserify": "^14.3.0",
+    "browserify-shim": "^3.8.14",
+    "factor-bundle": "^2.5.0",
+    "globby": "^6.1.0",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-uglify": "^2.1.2",
+    "gulp-util": "^3.0.8",
+    "lodash": "^4.17.4",
+    "mkdirp": "^0.5.1",
+    "require-dir": "^0.3.1",
+    "uglifyify": "^3.0.4",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.9.0",
+    "yargs": "^8.0.1"
+  },
+  "browser": {
+    "modernizr": "./public/assets/src/js/vendor/modernizr-3.4.0.js",
+    "jquery-string": "./public/assets/src/js/vendor/jquery-string.min.js",
+    "jquery-hashchange": "./public/assets/src/js/vendor/jquery.ba-hashchange.js",
+    "jquery.hoverIntent": "./public/assets/src/js/vendor/jquery.hoverIntent.js",
+    "jquery-ui": "./public/assets/src/js/vendor/jquery.draggable.js",
+    "jquery.gridrotator": "./public/assets/src/js/vendor/jquery.gridrotator.js",
+    "jquery.serializeObject": "./public/assets/src/js/vendor/jquery.serializeObject.min.js",
+    "viewport": "./public/assets/src/js/vendor/viewport.js",
+    "search": "./public/assets/src/js/search.js",
+    "suggest": "./public/assets/src/js/vendor/suggest.js",
+    "newsletter": "./public/assets/src/js/newsletter.js",
+    "promise": "./public/assets/src/js/vendor/promise-1.0.0.min.js",
+    "cross-storage": "./public/assets/src/js/vendor/cross-storage-client.min.js",
+    "webutils": "./public/assets/src/js/webutils.js",
+    "waypoints": "./public/assets/src/js/vendor/waypoints.min.js",
+    "waypoints-sticky": "./public/assets/src/js/vendor/waypoints-sticky.min.js",
+    "bootstrap": "./src/bootstrap.js"
+  },
+  "browserify-shim": {
+    "search": "universeSearch",
+    "newsletter": {
+      "exports": "NewsletterSignup",
+      "depends": [
+        "jquery:$"
+      ]
+    },
+    "cross-storage": "CrossStorageClient",
+    "webutils": {
+      "exports": "webutils",
+      "depends": [
+        "jquery:jQuery"
+      ]
+    }
+  }
+}
