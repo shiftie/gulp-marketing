@@ -13,25 +13,25 @@ const mkdirp = require('mkdirp');
 const path = require('path');
 const config = require('../configs/js')[gutil.env.site];
 
-gulp.task('scripts', ['clean'], function () {
+gulp.task('scripts', [], function (callback) {
     const debug = gutil.env.debug;
     const entries = globby.sync(config.entryPoints.map(entry => path.join(config.srcDir, entry)));
     const outputs = entries.map(entry => {
-        let output = entry.replace(config.srcDir, config.destDir);
-        output = debug ? output : output.replace(/\.js$/, `${config.prodSuffix}.js`);
+        const output = suffixInProd(entry.replace(config.srcDir, config.destDir));
         mkdirp.sync(path.dirname(output));
 
         return output;
     });
+    let remainingOutputs = outputs.length + 1; // +1 for common.js bundle
 
     let b = browserify({
         entries: entries,
         debug: debug,
         transform: [
             ['babelify', {
-                'presets': ['es2015']
+                'presets': ['es2015', 'react']
             }],
-            'browserify-shim'
+            'browserify-shim',
         ],
         plugin: [
             ['factor-bundle',
@@ -42,29 +42,62 @@ gulp.task('scripts', ['clean'], function () {
         ]
     });
 
-    if (debug) {
+    if (!debug) {
+        b.on('factor.pipeline', function (file, pipeline) {
+            // Watches for bundles output completion in order to call end of the task
+            pipeline._readableState.pipes.on('finish',function(){
+                checkTaskEnd();
+            });
+        });
+    } else {
         b = watchify(b);
         b.on('update', bundle); // on any dep update, runs the bundler
         b.on('log', gutil.log); // output build logs to terminal
     }
 
-    function bundle() {
-        const c = b.transform({ sourcemap: debug }, 'uglifyify') // minify bundles
-            .bundle()
-            .pipe(source(`${debug ? config.commonFilename : config.commonFilename.replace(/\.js$/, config.prodSuffix + '.js')}`)) // common bundle filename
-            .pipe(buffer());
-        if (debug) {
-            c.pipe(sourcemaps.init({loadMaps: debug}));
+    function checkTaskEnd() {
+        if(!debug) {
+            remainingOutputs -= 1;
+            if (remainingOutputs === 0) {
+                callback();
+            }
+        } else {
+            // If dev mode, we signal the end of the task once
+            // in order to keep executing following tasks
+            // but watchify is still monitoring bundle modifications
+            if (typeof callback === 'function') {
+                callback();
+                callback = null;
+            }
         }
-        c.pipe(uglify()) // minify common bundle
-            .on('error', gutil.log);
+    }
+
+    function suffixInProd(string) {
+        if (!debug) {
+            string = string.replace(/\.js$/, config.prodSuffix + '.js');
+        }
+
+        return string;
+    }
+
+    function bundle() {
+        let c = b
+            .bundle()
+            .pipe(source(suffixInProd(config.commonFilename))); // common bundle filename
         if (debug) {
-           c.pipe(sourcemaps.write('./'));
+            c = c.pipe(buffer()).pipe(sourcemaps.init({loadMaps: debug}))
+                .pipe(sourcemaps.write('./'));
         }
         c.pipe(gulp.dest(`${config.destDir}`))
-
-        return c;
+            .on('end', checkTaskEnd);
     }
 
     bundle();
+});
+
+gulp.task('scripts:optimize', [], function (callback) {
+    gulp.src(`${config.destDir}/**/*.js`)
+        .pipe(uglify())
+        .pipe(gulp.dest(config.destDir))
+        .on('end', callback);
 });

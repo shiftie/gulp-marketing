@@ -5,9 +5,9 @@ const gutil = require('gulp-util');
 const envs = require('../configs/env');
 const argv = require('yargs').argv;
 
-gulp.task('set-env', function () {
-    gutil.env.debug = !(argv.env === envs.prod);
+gulp.task('set-env', function (callback) {
+    gutil.env.debug = !(process.env.NODE_ENV === envs.prod);
     gutil.env.site = argv.site;
 
-    return;
+    callback();
 });
