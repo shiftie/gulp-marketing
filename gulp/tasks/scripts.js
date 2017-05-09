@@ -14,10 +14,56 @@ const path = require('path');
 const config = require('../configs/js')[gutil.env.site];
 
 gulp.task('scripts', [], function (callback) {
+    function checkTaskEnd() {
+        if(!debug) {
+            remainingOutputs -= 1;
+            if (remainingOutputs === 0) {
+                callback();
+            }
+        } else {
+            // If dev mode, we signal the end of the task once
+            // in order to keep executing following tasks
+            // but watchify is still monitoring bundle modifications
+            if (typeof callback === 'function') {
+                callback();
+                callback = null;
+            }
+        }
+    }
+
+    // Adds script filename suffix if in prod mode (not debug)
+    function suffixInProd(string) {
+        if (!debug) {
+            string = string.replace(/\.js$/, config.prodSuffix + '.js');
+        }
+
+        return string;
+    }
+
+    function bundle() {
+        let c = b
+            .bundle()
+            .pipe(source(suffixInProd(config.commonFilename))); // common bundle filename
+        if (debug) {
+            // Add separate sourcemap file if dev (debug) mode
+            c = c.pipe(buffer()).pipe(sourcemaps.init({loadMaps: debug}))
+                .pipe(sourcemaps.write('./'));
+        }
+        c= c.pipe(gulp.dest(`${config.destDir}`))
+            .on('end', checkTaskEnd);
+
+        return c;
+    }
+
     const debug = gutil.env.debug;
-    const entries = globby.sync(config.entryPoints.map(entry => path.join(config.srcDir, entry)));
+    const entries = globby.sync(
+        config.entryPoints.map(
+            entry => path.join(config.srcDir, entry)
+        )
+    );
     const outputs = entries.map(entry => {
         const output = suffixInProd(entry.replace(config.srcDir, config.destDir));
+        // Creates required folders on the fly
         mkdirp.sync(path.dirname(output));
 
         return output;
@@ -53,43 +99,6 @@ gulp.task('scripts', [], function (callback) {
         b = watchify(b);
         b.on('update', bundle); // on any dep update, runs the bundler
         b.on('log', gutil.log); // output build logs to terminal
-    }
-
-    function checkTaskEnd() {
-        if(!debug) {
-            remainingOutputs -= 1;
-            if (remainingOutputs === 0) {
-                callback();
-            }
-        } else {
-            // If dev mode, we signal the end of the task once
-            // in order to keep executing following tasks
-            // but watchify is still monitoring bundle modifications
-            if (typeof callback === 'function') {
-                callback();
-                callback = null;
-            }
-        }
-    }
-
-    function suffixInProd(string) {
-        if (!debug) {
-            string = string.replace(/\.js$/, config.prodSuffix + '.js');
-        }
-
-        return string;
-    }
-
-    function bundle() {
-        let c = b
-            .bundle()
-            .pipe(source(suffixInProd(config.commonFilename))); // common bundle filename
-        if (debug) {
-            c = c.pipe(buffer()).pipe(sourcemaps.init({loadMaps: debug}))
-                .pipe(sourcemaps.write('./'));
-        }
-        c.pipe(gulp.dest(`${config.destDir}`))
-            .on('end', checkTaskEnd);
     }
 
     bundle();
