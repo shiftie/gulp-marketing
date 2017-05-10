@@ -73,6 +73,8 @@ gulp.task('scripts', [], function (callback) {
     let b = browserify({
         entries: entries,
         debug: debug,
+        cache: {},
+        packageCache: {},
         transform: [
             ['babelify', {
                 'presets': ['es2015', 'react']

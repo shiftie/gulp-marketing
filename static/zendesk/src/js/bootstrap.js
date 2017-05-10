@@ -1,4 +1,4 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
+// This is the entry point of light weight script that is required
+// for inital page layout setting
 
-console.log('bootstrap');
+console.log('im boostrap & im light weight');
