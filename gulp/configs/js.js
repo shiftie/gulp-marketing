@@ -4,8 +4,8 @@ const meta = require('./meta');
 
 module.exports = {
     'zendesk': {
-        'srcDir': `${meta.zenAssets}/src/js`,
-        'destDir': `${meta.zenAssets}/public/js`,
+        'srcDir': `${meta.zendeskAssets}/${meta.srcDir}/js`,
+        'destDir': `${meta.zendeskAssets}/${meta.distDir}/js`,
         'entryPoints': [
             'bootstrap.js',
             'app.js',
@@ -15,18 +15,8 @@ module.exports = {
         'prodSuffix': '.min',
     },
     'relate': {
-        'srcDir': `${meta.rltAssets}/src/js`,
-        'destDir': `${meta.rltAssets}/js`,
-        'entryPoints': [
-            'bootstrap.js',
-            'app.js',
-        ],
-        'commonFilename': 'common.js',
-        'prodSuffix': '.min',
-    },
-    'zopim': {
-        'srcDir': `${meta.zpmAssets}/src/js`,
-        'destDir': `${meta.zpmAssets}/src/js`,
+        'srcDir': `${meta.relateAssets}/${meta.srcDir}/js`,
+        'destDir': `${meta.relateAssets}/${meta.distDir}`,
         'entryPoints': [
             'bootstrap.js',
             'app.js',

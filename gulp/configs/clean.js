@@ -1,7 +1,6 @@
-const jsConfig = require('./js');
+const config = require('./meta');
 
 module.exports = {
-     'zendesk': [ jsConfig.zendesk.destDir ],
-     'relate': [ jsConfig.relate.destDir ],
-     'zopim': [ jsConfig.zopim.destDir ],
+     'zendesk': [ `${config.zendeskAssets}/${config.distDir}` ],
+     'relate': [ `${config.relateAssets}/${config.distDir}` ],
 }
