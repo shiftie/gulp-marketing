@@ -19,6 +19,7 @@ gulp.task('zendesk', [], (callback) => {
 gulp.task('zendesk:prod', ['zendesk'], (callback) => {
     runSequence(
         'scripts:optimize',
+        'gzip',
         callback
     );
 });
