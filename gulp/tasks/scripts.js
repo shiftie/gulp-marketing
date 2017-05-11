@@ -14,6 +14,9 @@ const path = require('path');
 const config = require('../configs/js')[gutil.env.site];
 
 gulp.task('scripts', [], function (callback) {
+    // Signals task completion
+    // dev mode: on first call
+    // prod mode: once all bundle outputs have been written
     function checkTaskEnd() {
         if(!debug) {
             remainingOutputs -= 1;
@@ -40,6 +43,7 @@ gulp.task('scripts', [], function (callback) {
         return string;
     }
 
+    // Rebundle function with conditional sourcemaps
     function bundle() {
         let c = b
             .bundle()
@@ -56,11 +60,13 @@ gulp.task('scripts', [], function (callback) {
     }
 
     const debug = gutil.env.debug;
+    // Get entry points from config
     const entries = globby.sync(
         config.entryPoints.map(
             entry => path.join(config.srcDir, entry)
         )
     );
+    // Get output paths
     const outputs = entries.map(entry => {
         const output = suffixInProd(entry.replace(config.srcDir, config.destDir));
         // Creates required folders on the fly
@@ -68,16 +74,17 @@ gulp.task('scripts', [], function (callback) {
 
         return output;
     });
+    // Bundle counter used to detect rebundle process end in prod mode
+    // Since common.js is automatically created, we have to add 1
     let remainingOutputs = outputs.length + 1; // +1 for common.js bundle
-
     let b = browserify({
         entries: entries,
         debug: debug,
-        cache: {},
-        packageCache: {},
+        cache: {}, // mendatory for rebundle cache
+        packageCache: {}, // mendatory for rebundle cache
         transform: [
             ['babelify', {
-                'presets': ['es2015', 'react']
+                'presets': ['es2015']
             }],
             'browserify-shim',
         ],
@@ -99,8 +106,13 @@ gulp.task('scripts', [], function (callback) {
         });
     } else {
         b = watchify(b);
-        b.on('update', bundle); // on any dep update, runs the bundler
-        b.on('log', gutil.log); // output build logs to terminal
+        b.on('update', (ids) => {
+            gutil.log(gutil.colors.dim(`JS Rebundling....`));
+            bundle();
+        }); // on any dep update, runs the bundler
+        b.on('time', (time) => {
+            gutil.log(gutil.colors.green(`JS Bundled in ${time / 1000} s`));
+        }); // output build logs to terminal
     }
 
     bundle();

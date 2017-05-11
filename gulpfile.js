@@ -11,6 +11,7 @@ requireDir('./gulp', {recurse: true});
 gulp.task('zendesk', [], (callback) => {
     runSequence(
         ['clean', 'update-html'],
+        'styles',
         'scripts',
         callback
     );
@@ -18,12 +19,12 @@ gulp.task('zendesk', [], (callback) => {
 
 gulp.task('zendesk:prod', ['zendesk'], (callback) => {
     runSequence(
+        'styles:optimize',
         'scripts:optimize',
         'gzip',
         callback
     );
 });
-
 
 gulp.task('default', ['set-env'], (callback) => {
     runSequence(

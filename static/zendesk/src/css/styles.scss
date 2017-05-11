@@ -1,0 +1,10 @@
+@import 'app';
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(to bottom, #FFC371 0%,#FF5F6D 100vh) no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

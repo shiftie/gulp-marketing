@@ -10,7 +10,7 @@ gulp.task('update-html', () => {
     let html = fs.readFileSync(file, 'utf8');
 
     html = debug ?
-        html.replace(/\.min\.js"/g, '.js"'):
-        html.replace(/(\.min)?\.js"/g, '.min.js"');
+        html.replace(/\.min\.(js|css)"/g, ".$1\""):
+        html.replace(/(\.min)?\.(js|css)"/g, ".min.$2\"");
     fs.writeFileSync(file, html, 'utf8');
 });

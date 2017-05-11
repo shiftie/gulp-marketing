@@ -16,7 +16,7 @@ module.exports = {
     },
     'relate': {
         'srcDir': `${meta.relateAssets}/${meta.srcDir}/js`,
-        'destDir': `${meta.relateAssets}/${meta.distDir}`,
+        'destDir': `${meta.relateAssets}/${meta.distDir}/js`,
         'entryPoints': [
             'bootstrap.js',
             'app.js',

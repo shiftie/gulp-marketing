@@ -5,6 +5,6 @@ const config = require('../configs/gzip')[gutil.env.site];
 
 gulp.task('gzip', function() {
   return gulp.src(config.src)
-    .pipe(gzip())
+    .pipe(gzip({ skipGrowingFiles : true }))
     .pipe(gulp.dest(config.dest));
 });
