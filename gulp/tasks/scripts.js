@@ -105,6 +105,7 @@ gulp.task('scripts', [], function (callback) {
             });
         });
     } else {
+        // If dev mode, watches for bundle changes
         b = watchify(b);
         // on any dep update, runs the bundler
         b.on('update', (ids) => {

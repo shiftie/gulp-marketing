@@ -20,7 +20,7 @@ function writeEnvDependentVariables() {
 
 gulp.task('set-env', function (callback) {
     gutil.env.debug = !(process.env.NODE_ENV === envs.prod);
-    gutil.env.site = argv.site;
+    gutil.env.site = argv.site || 'zendesk';
 
     writeEnvDependentVariables();
 
