@@ -6,7 +6,7 @@ const gutil = require('gulp-util');
 const argv = require('yargs').argv;
 const runSequence = require('run-sequence');
 
-requireDir('./gulp', {recurse: true});
+requireDir('./gulp/tasks', {recurse: true});
 
 gulp.task('zendesk', [], (callback) => {
     runSequence(
