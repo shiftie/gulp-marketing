@@ -10,7 +10,7 @@ requireDir('./gulp', {recurse: true});
 
 gulp.task('zendesk', [], (callback) => {
     runSequence(
-        ['clean', 'update-html'],
+        [/*'clean',*/ 'update-html'],
         'styles',
         'scripts',
         'images',
