@@ -106,19 +106,22 @@ gulp.task('scripts', [], function (callback) {
         });
     } else {
         b = watchify(b);
+        // on any dep update, runs the bundler
         b.on('update', (ids) => {
             gutil.log(gutil.colors.dim(`JS Rebundling....`));
             bundle();
-        }); // on any dep update, runs the bundler
+        });
+        // output build logs to terminal
         b.on('time', (time) => {
             gutil.log(gutil.colors.green(`JS Bundled in ${time / 1000} s`));
-        }); // output build logs to terminal
+        });
     }
 
     bundle();
 });
 
 gulp.task('scripts:optimize', [], function (callback) {
+    // Uglifies bundle files (file name is already correctly set)
     gulp.src(`${config.destDir}/**/*.js`)
         .pipe(uglify())
         .pipe(gulp.dest(config.destDir))

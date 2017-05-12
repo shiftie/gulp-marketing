@@ -7,5 +7,5 @@ const clean = require('gulp-clean');
 
 gulp.task('clean', function () {
     return gulp.src(config, {read: false})
-		.pipe(clean());
+		  .pipe(clean());
 });

@@ -7,7 +7,7 @@
     font-size: 5em;
     display: inline-block;
     transition: all .5s cubic-bezier(.17,.67,.29,1.39);
-
+    background:  url(#{$cdn-assets-img}/a.jpg);
     .ready & {
         opacity: 1;
         transform: scale(1);
