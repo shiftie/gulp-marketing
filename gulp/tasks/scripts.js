@@ -13,6 +13,10 @@ const mkdirp = require('mkdirp');
 const path = require('path');
 const config = require('../configs/js')[gutil.env.site];
 
+/**
+ * Bundles all the JS with browserify, then watches for changes if in
+ * development env, or appends necessary file suffixes if in production env.
+ */
 gulp.task('scripts', [], function (callback) {
     // Signals task completion
     // dev mode: on first call
@@ -80,8 +84,8 @@ gulp.task('scripts', [], function (callback) {
     let b = browserify({
         entries: entries,
         debug: debug,
-        cache: {}, // mendatory for rebundle cache
-        packageCache: {}, // mendatory for rebundle cache
+        cache: {}, // mandatory for rebundle cache
+        packageCache: {}, // mandatory for rebundle cache
         transform: [
             ['babelify', {
                 'presets': ['es2015']
@@ -121,6 +125,9 @@ gulp.task('scripts', [], function (callback) {
     bundle();
 });
 
+/**
+ * Uglifies the generated bundled files from the 'scripts' task.
+ */
 gulp.task('scripts:optimize', [], function (callback) {
     // Uglifies bundle files (file name is already correctly set)
     gulp.src(`${config.destDir}/**/*.js`)
