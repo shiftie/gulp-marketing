@@ -13,6 +13,7 @@ gulp.task('zendesk', [], (callback) => {
         ['clean', 'update-html'],
         'styles',
         'scripts',
+        'images',
         callback
     );
 });

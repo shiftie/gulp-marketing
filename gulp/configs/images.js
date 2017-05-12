@@ -2,10 +2,15 @@ const env = require('./env');
 const meta = require('./meta');
 
 module.exports = {
+    'optimization': {
+        'optimizationLevel': 3,
+        'progessive': true,
+        'interlaced': true
+    },
     'zendesk': {
         [env.dev]: {
             'srcDir': `${meta.zendeskAssets}/${meta.srcDir}/images`,
-            'destDir': `${meta.zendeskAssets}/${meta.distDir}/images`,
+            'destDir': `/${meta.zendeskAssets}/${meta.distDir}/images`,
         },
         [env.prod]: {
             'srcDir': `${meta.zendeskAssets}/${meta.srcDir}/images`,
