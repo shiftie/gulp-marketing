@@ -23,11 +23,7 @@ function writeEnvDependentVariables() {
     );
 }
 
-/**
- * Sets the environment to be either development or production.
- * Updates other variables dependent on the environment.
- */
-gulp.task('set-env', function (callback) {
+gulp.task('set-env', [], function (callback) {
     gutil.env.debug = !(process.env.NODE_ENV === envs.prod);
     gutil.env.site = argv.site || 'zendesk';
 

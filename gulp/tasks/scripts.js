@@ -127,10 +127,14 @@ gulp.task('scripts', [], function (callback) {
 
 /**
  * Uglifies the generated bundled files from the 'scripts' task.
+ * Ignores versionned files
  */
 gulp.task('scripts:optimize', [], function (callback) {
     // Uglifies bundle files (file name is already correctly set)
-    gulp.src(`${config.destDir}/**/*.js`)
+    gulp.src([
+        `${config.destDir}/**/*.js`,
+        `!${config.destDir}/**/*${gutil.env.versions.current}.js`,
+        ])
         .pipe(uglify())
         .pipe(gulp.dest(config.destDir))
         .on('end', callback);

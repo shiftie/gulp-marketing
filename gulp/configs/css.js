@@ -1,5 +1,6 @@
 'use strict';
 
+const gutil = require('gulp-util');
 const meta = require('./meta');
 
 module.exports = {
@@ -14,13 +15,13 @@ module.exports = {
     'zendesk': {
         'src': [ `${meta.zendeskAssets}/${meta.srcDir}/css/**/*.scss` ],
         'dest': `${meta.zendeskAssets}/${meta.distDir}/css`,
-        'prodSuffix': '.min',
+        'prodSuffix': `.min`,
         'envVarsFile': `./${meta.zendeskAssets}/${meta.srcDir}/css/_env-vars.scss`,
     },
     'relate': {
         'src': [ `${meta.relateAssets}/${meta.srcDir}/css/**/*.scss` ],
         'dest': `${meta.relateAssets}/${meta.distDir}/css`,
-        'prodSuffix': '.min',
+        'prodSuffix': `.min`,
         'envVarsFile': `./${meta.relateAssets}/${meta.srcDir}/css/_env-vars.scss`,
     },
 }

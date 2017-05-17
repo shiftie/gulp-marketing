@@ -64,7 +64,9 @@ gulp.task('styles:optimize', [], function () {
     // Minifies & renames the output CSS file
     return gulp.src([
             `${siteConfig.dest}/**/*.css`,
-            `!${siteConfig.dest}/**/*${siteConfig.prodSuffix}.css`]
+            `!${siteConfig.dest}/**/*${siteConfig.prodSuffix}.css`,
+            `!${siteConfig.dest}/**/*${siteConfig.prodSuffix}${gutil.env.versions.current}.css`,
+            ]
         )
         .pipe(newer({
             dest: siteConfig.dest,

@@ -17,10 +17,10 @@ requireDir('./gulp/tasks', {recurse: true});
  */
 gulp.task('zendesk', [], (callback) => {
     runSequence(
-        [/*'clean',*/ 'update-html'],
+        ['update-html'],
         'styles',
         'scripts',
-        'images',
+        // 'images',
         callback
     );
 });
@@ -31,11 +31,12 @@ gulp.task('zendesk', [], (callback) => {
  * 2. Uglifies the JS
  * 3. Gzips both css/js
  */
-gulp.task('zendesk:prod', ['zendesk'], (callback) => {
+gulp.task('zendesk:prod', ['zendesk', 'get-versions'], (callback) => {
     runSequence(
         'styles:optimize',
         'scripts:optimize',
         'gzip',
+        'version',
         callback
     );
 });
