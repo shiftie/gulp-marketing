@@ -15,6 +15,9 @@ const newer = require('gulp-newer');
 const config = require('../configs/css');
 const siteConfig = config[gutil.env.site];
 
+/**
+ * Compiles a scss file, using compass and running any postprocessors as well.
+ */
 function compile(file) {
     const processors = [
         autoprefixer(config.options.autoprefixer),
@@ -37,6 +40,10 @@ function compile(file) {
         });
 };
 
+/**
+ * Sets up the watcher for changes in scss files when in debug mode,
+ * and compiles changed files.
+ */
 gulp.task('styles', function () {
     const debug = gutil.env.debug;
 
@@ -50,6 +57,9 @@ gulp.task('styles', function () {
     return compile();
 });
 
+/**
+ * Minifies & renames the CSS generated from the 'styles' task.
+ */
 gulp.task('styles:optimize', [], function () {
     // Minifies & renames the output CSS file
     return gulp.src([

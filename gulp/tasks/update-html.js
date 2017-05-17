@@ -4,6 +4,10 @@ const gulp = require('gulp');
 const gutil = require('gulp-util');
 const fs = require('fs');
 
+/**
+ * Updates index.html by adding/removing minified extensions for js & css files
+ * depending on the current environment.
+ */
 gulp.task('update-html', () => {
     const file = 'index.html';
     const debug = gutil.env.debug;

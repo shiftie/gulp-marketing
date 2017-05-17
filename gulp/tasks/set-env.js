@@ -8,6 +8,11 @@ const envs = require('../configs/env');
 const cssConfig = require('../configs/css');
 const imagesConfig = require('../configs/images');
 
+/**
+ * Updates scss variable with the environment-dependent image folder path.
+ * TODO: Will also export this environment var in a js module ;
+ * TODO: Will update php files by exporting this var in $GLOBALS.
+ */
 function writeEnvDependentVariables() {
     const env = gutil.env.debug ? envs.dev : envs.prod;
 
@@ -18,6 +23,10 @@ function writeEnvDependentVariables() {
     );
 }
 
+/**
+ * Sets the environment to be either development or production.
+ * Updates other variables dependent on the environment.
+ */
 gulp.task('set-env', function (callback) {
     gutil.env.debug = !(process.env.NODE_ENV === envs.prod);
     gutil.env.site = argv.site || 'zendesk';
