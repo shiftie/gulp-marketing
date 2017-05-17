@@ -16,6 +16,8 @@ const config = require('../configs/version')[gutil.env.site];
 const jsConfig = require('../configs/js')[gutil.env.site];
 const cssConfig = require('../configs/css')[gutil.env.site];
 
+// Maps each file to version to its current version file
+// Like: {style.min.css: style.min.sdfksf454.css}
 function mapCurrentVersionFiles(versions) {
     let mapping = {};
     let files = globby.sync(config.src);
@@ -39,6 +41,8 @@ function mapCurrentVersionFiles(versions) {
     return mapping;
 }
 
+// Files that have been modified have a new version file generated
+// We're sending the list of files that have been processed
 function updateModifiedFilesVersion(versions, currentVersionMapping) {
     return new Promise((resolve, reject) => {
         const updatedFiles = [];
@@ -50,21 +54,14 @@ function updateModifiedFilesVersion(versions, currentVersionMapping) {
                 map: function(relativePath) {
                     versionnedFile = '';
 
-                    if (versions.current.length) {
-                        versionnedFile = currentVersionMapping[path.join(config.dest, relativePath)];
-                        versionnedFile = path.relative(config.dest, versionnedFile);
+                    versionnedFile = currentVersionMapping[path.join(config.dest, relativePath)];
+                    versionnedFile = path.relative(config.dest, versionnedFile);
 
-                        return `${versionnedFile}`;
-                    } else {
-                        console.log('special case');
-                        return `--some-non-existant-file-to-always-force-newer-condition--`;
-                    }
+                    return `${versionnedFile}`;
                 }
             }))
             .pipe(tap((file) => {
-                    updatedFiles.push(path.relative(process.cwd(), file.path));
-                if(versionnedFile.length) {
-                }
+                updatedFiles.push(path.relative(process.cwd(), file.path));
             }))
             .pipe(rename((path) => {
                 if (path.extname === '.gz') {
@@ -78,13 +75,16 @@ function updateModifiedFilesVersion(versions, currentVersionMapping) {
                 }
             }))
             .pipe(gulp.dest(`${config.dest}`))
-            .on('finish', ()=>{
+            .on('finish', () => {
                 resolve(updatedFiles);
             });
-
     });
 }
 
+// If the configured version holding file doesn't exist
+// it's created with a generated value
+// Then we store un gutil.env.versions the current & next version
+// This task is a dependency for other tasks
 gulp.task('get-versions', (callback) => {
     if (gutil.env.versions) {
         callback();
@@ -105,6 +105,8 @@ gulp.task('get-versions', (callback) => {
     }
 });
 
+// We're removing deprecated version files of files that have been
+// processed earlier (via updateModifiedFilesVersion)
 function deleteDeprecatedFiles(updatedFiles, currentVersionMapping) {
     return new Promise((resolve, reject) => {
         const deprecatedFileList = [];
@@ -124,6 +126,8 @@ function deleteDeprecatedFiles(updatedFiles, currentVersionMapping) {
     });
 }
 
+// For remaining (unmodified) files, we use the mapping to rename version files
+// to the new version
 function upgradeUnmodifiedFilesVersion(versions, mappingOfFilesToRenameToNextVersion) {
     return new Promise((resolve, reject) => {
         const fileList = [];
@@ -144,6 +148,7 @@ function upgradeUnmodifiedFilesVersion(versions, mappingOfFilesToRenameToNextVer
     });
 }
 
+// Stores new version as the current version
 function updateVersionFile(versions) {
     return new Promise((resolve, reject) => {
         fs.writeFileSync(config.filePath, versions.next);
@@ -151,25 +156,39 @@ function updateVersionFile(versions) {
     });
 }
 
+/**
+ * Versioning task:
+ * checks configured files to version
+ * detects which ones have been updated
+ * updated files are versioned & deprecated versions are removed
+ * unmodified files have their versioned file updated to new version
+ * new version is stored in a site specific file
+ */
 gulp.task('version', [], (callback) => {
+    // This value is set by get-versions task
     let versions = gutil.env.versions;
     let currentVersionMapping;
 
+    // For each configured file, associated current version file
     currentVersionMapping = mapCurrentVersionFiles(versions);
 
+    // Generates a new version for updated minified files
     updateModifiedFilesVersion(versions, currentVersionMapping)
      .then((updatedFiles) => {
+         // Removes deprecated versions
         return deleteDeprecatedFiles(updatedFiles, currentVersionMapping);
     })
     .then((mappingOfFilesToRenameToNextVersion) => {
+        // For minified files that are not modified,
+        // simply updates versioned file name to match new version
         return upgradeUnmodifiedFilesVersion(versions, mappingOfFilesToRenameToNextVersion);
     })
     .then(() => {
+        // Stores new version as the current version into a file
         return updateVersionFile(versions);
     })
     .then(() => {
         console.log(`Updated to version ${versions.next}`);
         callback();
     });
-
 });
