@@ -147,7 +147,7 @@ function updateVersionFile(versions) {
 /**
  * If the configured version holding file doesn't exist
  * it's created with a generated value
- * Then we store un gutil.env.versions the current & next version
+ * Then we store in gutil.env.versions the current & next version
  * This task is a dependency for other tasks
  */
 gulp.task('get-versions', (callback) => {
