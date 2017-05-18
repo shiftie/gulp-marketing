@@ -16,8 +16,14 @@ const config = require('../configs/version')[gutil.env.site];
 const jsConfig = require('../configs/js')[gutil.env.site];
 const cssConfig = require('../configs/css')[gutil.env.site];
 
-// Maps each file to version to its current version file
-// Like: {style.min.css: style.min.sdfksf454.css}
+/**
+ * Maps each file to version to its current version file
+ * Like: {
+ *  style.min.css: style.min.sdfksf454.css
+ *  script.min.js: script.min.sdfksf454.js
+ *  ....
+ * }
+ */
 function mapCurrentVersionFiles(versions) {
     let mapping = {};
     let files = globby.sync(config.src);
@@ -41,8 +47,10 @@ function mapCurrentVersionFiles(versions) {
     return mapping;
 }
 
-// Files that have been modified have a new version file generated
-// We're sending the list of files that have been processed
+/**
+ * Files that have been modified have a new version file generated
+ * We're returning the list of files that have been processed
+ */
 function updateModifiedFilesVersion(versions, currentVersionMapping) {
     return new Promise((resolve, reject) => {
         const updatedFiles = [];
@@ -81,32 +89,10 @@ function updateModifiedFilesVersion(versions, currentVersionMapping) {
     });
 }
 
-// If the configured version holding file doesn't exist
-// it's created with a generated value
-// Then we store un gutil.env.versions the current & next version
-// This task is a dependency for other tasks
-gulp.task('get-versions', (callback) => {
-    if (gutil.env.versions) {
-        callback();
-    } else {
-        if (!fs.existsSync(config.filePath)) {
-            fs.writeFileSync(config.filePath, shortId.generate());
-        }
-
-        const currentVersion = fs.readFileSync(config.filePath,'utf8');
-        const nextVersion = `.${shortId.generate()}`;
-
-        gutil.env.versions = {
-            current: currentVersion,
-            next: nextVersion,
-        };
-
-        callback();
-    }
-});
-
-// We're removing deprecated version files of files that have been
-// processed earlier (via updateModifiedFilesVersion)
+/**
+ * We're removing deprecated version files of files that have been
+ * processed earlier (via updateModifiedFilesVersion)
+ */
 function deleteDeprecatedFiles(updatedFiles, currentVersionMapping) {
     return new Promise((resolve, reject) => {
         const deprecatedFileList = [];
@@ -126,8 +112,10 @@ function deleteDeprecatedFiles(updatedFiles, currentVersionMapping) {
     });
 }
 
-// For remaining (unmodified) files, we use the mapping to rename version files
-// to the new version
+/**
+ * For remaining (unmodified) files,
+ * we use the mapping to rename version files to the new version
+ */
 function upgradeUnmodifiedFilesVersion(versions, mappingOfFilesToRenameToNextVersion) {
     return new Promise((resolve, reject) => {
         const fileList = [];
@@ -157,6 +145,32 @@ function updateVersionFile(versions) {
 }
 
 /**
+ * If the configured version holding file doesn't exist
+ * it's created with a generated value
+ * Then we store un gutil.env.versions the current & next version
+ * This task is a dependency for other tasks
+ */
+gulp.task('get-versions', (callback) => {
+    if (gutil.env.versions) {
+        callback();
+    } else {
+        if (!fs.existsSync(config.filePath)) {
+            fs.writeFileSync(config.filePath, shortId.generate());
+        }
+
+        const currentVersion = fs.readFileSync(config.filePath,'utf8');
+        const nextVersion = `.${shortId.generate()}`;
+
+        gutil.env.versions = {
+            current: currentVersion,
+            next: nextVersion,
+        };
+
+        callback();
+    }
+});
+
+/**
  * Versioning task:
  * checks configured files to version
  * detects which ones have been updated
@@ -169,7 +183,7 @@ gulp.task('version', [], (callback) => {
     let versions = gutil.env.versions;
     let currentVersionMapping;
 
-    // For each configured file, associated current version file
+    // For each configured file, associates current version file
     currentVersionMapping = mapCurrentVersionFiles(versions);
 
     // Generates a new version for updated minified files
