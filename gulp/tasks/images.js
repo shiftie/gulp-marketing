@@ -19,7 +19,7 @@ gulp.task('images', function () {
             .pipe(vinylPaths(del))
             .pipe(imagemin(config.optimization))
 		    .pipe(gulp.dest(siteConfig.destDir));
-    }else {
+    } else {
         return;
         // TODO
     }

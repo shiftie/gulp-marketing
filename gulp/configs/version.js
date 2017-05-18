@@ -13,7 +13,7 @@ module.exports = {
     'relate': {
         'filePath': '.version-relate',
         'src': [
-            `${meta.relateAssets}/${meta.distDir}/**/*{${cssConfig.relate.prodSuffix}.css,${jsConfig.relate.prodSuffix}.js}`
+            `${meta.relateAssets}/${meta.distDir}/**/*{${cssConfig.relate.prodSuffix}.css,${jsConfig.relate.prodSuffix}.js,${cssConfig.relate.prodSuffix}.css.gz,${jsConfig.relate.prodSuffix}.js.gz}`
         ],
         'dest': `${meta.relateAssets}/${meta.distDir}`,
     }
