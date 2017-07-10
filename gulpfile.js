@@ -13,7 +13,7 @@ requireDir('./gulp/tasks', {recurse: true});
  * 1. Removes minified file suffixes in html
  * 2. Compiles sass
  * 3. Bundles JS
- * 4. Optimizes images
+ * 4. Optimizes images & uploads
  */
 gulp.task('zendesk', [], (callback) => {
     runSequence(
@@ -29,7 +29,7 @@ gulp.task('zendesk', [], (callback) => {
  * Performs the remaining tasks for making assets production-ready.
  * 1. Minifies CSS
  * 2. Uglifies the JS
- * 3. Gzips both css/js
+ * 3. Versions updated files
  */
 gulp.task('zendesk:prod', ['zendesk'], (callback) => {
     runSequence(
