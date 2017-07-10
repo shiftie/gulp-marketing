@@ -8,23 +8,11 @@ module.exports = {
         'interlaced': true
     },
     'zendesk': {
-        [env.dev]: {
-            'srcDir': `${meta.zendeskAssets}/${meta.srcDir}/images`,
-            'destDir': `/${meta.zendeskAssets}/${meta.distDir}/images`,
-        },
-        [env.prod]: {
-            'srcDir': `${meta.zendeskAssets}/${meta.srcDir}/images`,
-            'destDir': `//zen-marketing-assets-new-structure.s3-us-west-2.amazonaws.com/images`,
-        }
+        'srcDir': `${meta.zendeskAssets}/${meta.srcDir}/images`,
+        'uploadScript': `scripts/uploadImages.js`,
     },
     'relate': {
-        [env.dev]: {
-            'srcDir': `${meta.relateAssets}/${meta.srcDir}/images`,
-            'destDir': `${meta.relateAssets}/${meta.distDir}/images`,
-        },
-        [env.prod]: {
-            'srcDir': `${meta.relateAssets}/${meta.srcDir}/images`,
-            'destDir': `//zen-marketing-assets-new-structure.s3-us-west-2.amazonaws.com/images`,
-        }
+        'srcDir': `${meta.relateAssets}/${meta.srcDir}/images`,
+        'uploadScript': `scripts/uploadImages.js`,
     }
 }
