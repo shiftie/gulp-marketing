@@ -32,7 +32,7 @@ function compile(file) {
         .pipe(sass({ importer: compass }).on('error', sass.logError))
         .pipe(postcss(processors))
         .pipe(tap((file) => {
-            gutil.log(gutil.colors.dim(`SCSS compiling ${file.path}`));
+            gutil.log(gutil.colors.dim(`SCSS compiling ${file.path.replace(/\.css$/, '.scss')}`));
         }))
         .pipe(gulp.dest(siteConfig.dest))
         .on('end', () => {
@@ -65,7 +65,6 @@ gulp.task('styles:optimize', [], function () {
     return gulp.src([
             `${siteConfig.dest}/**/*.css`,
             `!${siteConfig.dest}/**/*${siteConfig.prodSuffix}.css`,
-            `!${siteConfig.dest}/**/*${siteConfig.prodSuffix}${gutil.env.versions.current}.css`,
             ]
         )
         .pipe(newer({

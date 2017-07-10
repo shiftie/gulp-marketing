@@ -20,7 +20,7 @@ gulp.task('zendesk', [], (callback) => {
         ['update-html'],
         'styles',
         'scripts',
-        // 'images',
+        'images',
         callback
     );
 });
@@ -31,11 +31,10 @@ gulp.task('zendesk', [], (callback) => {
  * 2. Uglifies the JS
  * 3. Gzips both css/js
  */
-gulp.task('zendesk:prod', ['zendesk', 'get-versions'], (callback) => {
+gulp.task('zendesk:prod', ['zendesk'], (callback) => {
     runSequence(
         'styles:optimize',
         'scripts:optimize',
-        'gzip',
         'version',
         callback
     );

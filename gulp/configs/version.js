@@ -3,18 +3,16 @@ const jsConfig = require('./js');
 const cssConfig = require('./css');
 
 module.exports = {
+    'manifest': 'rev-manifest.json',
+    'basePath': '.',
     'zendesk': {
-        'filePath': '.version-zendesk',
         'src': [
-            `${meta.zendeskAssets}/${meta.distDir}/**/*{${cssConfig.zendesk.prodSuffix}.css,${jsConfig.zendesk.prodSuffix}.js,${cssConfig.zendesk.prodSuffix}.css.gz,${jsConfig.zendesk.prodSuffix}.js.gz}`
+            `${meta.zendeskAssets}/${meta.distDir}/**/*{${cssConfig.zendesk.prodSuffix}.css,${jsConfig.zendesk.prodSuffix}.js}`
         ],
-        'dest': `${meta.zendeskAssets}/${meta.distDir}`,
     },
     'relate': {
-        'filePath': '.version-relate',
         'src': [
             `${meta.relateAssets}/${meta.distDir}/**/*{${cssConfig.relate.prodSuffix}.css,${jsConfig.relate.prodSuffix}.js,${cssConfig.relate.prodSuffix}.css.gz,${jsConfig.relate.prodSuffix}.js.gz}`
         ],
-        'dest': `${meta.relateAssets}/${meta.distDir}`,
     }
 };

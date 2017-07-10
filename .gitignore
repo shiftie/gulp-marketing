@@ -1,5 +1,2 @@
 node_modules
 static/zendesk/public
-
-_env-vars.scss
-.version-*
