@@ -22,3 +22,4 @@ import 'waypoints';
 import 'waypoints-sticky';
 
 $.bridget('isotope', Isotope, $); // Convert Isotope to jQuery plugin
+
