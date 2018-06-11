@@ -1,2 +1,11 @@
+sudo: false
+language: node_js
+node_js:
+- '8.9.4'
+env:
+- ENVIRONMENT=travis CXX=g++-4.8
+cache: yarn
+git:
+  depth: 50
 script:
-  - 'echo 'yo'
+  - 'echo "yo"'
