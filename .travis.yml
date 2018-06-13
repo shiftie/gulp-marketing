@@ -12,3 +12,4 @@ git:
   depth: 50
 script:
   - 'echo "yo"'
+
